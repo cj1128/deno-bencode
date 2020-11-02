@@ -1,4 +1,3 @@
-import { assert } from "../test/deps.ts"
 import { cmpRawString } from "./util.ts"
 
 export type bencodeValue = string | Uint8Array | number | { [key: string]: bencodeValue } | bencodeValue[]

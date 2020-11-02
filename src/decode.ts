@@ -42,7 +42,8 @@ class Decoder {
   }
 
   readNumber(): number {
-    return parseInt(td.decode(this.readUntil(":")))
+    const buf = this.readUntil(":")
+    return parseInt(td.decode(buf))
   }
 
   peekByte(): string {
@@ -107,7 +108,7 @@ class Decoder {
       throw new Error(`not a number: ${content}`)
     }
 
-    return result >> 0
+    return result
   }
 
   nextList(): bencodeValue[] {
