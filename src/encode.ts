@@ -1,6 +1,11 @@
 import { cmpRawString } from "./util.ts"
 
-export type bencodeValue = string | Uint8Array | number | { [key: string]: bencodeValue } | bencodeValue[]
+export type bencodeValue =
+  | string
+  | Uint8Array
+  | number
+  | { [key: string]: bencodeValue }
+  | bencodeValue[]
 
 const te = new TextEncoder()
 
@@ -25,11 +30,14 @@ const encodeBuf = (buf: Uint8Array): Uint8Array => {
 
 const encodeNumber = (num: number): Uint8Array => {
   // NOTE: only support integers
-  num = num >> 0
+  const int = Math.floor(num)
+  if (int !== num) {
+    throw new Error(`bencode only support integers, got ${num}`)
+  }
 
   const buf = new Deno.Buffer()
   buf.writeSync(te.encode("i"))
-  buf.writeSync(te.encode(num.toString()))
+  buf.writeSync(te.encode(int.toString()))
   buf.writeSync(te.encode("e"))
 
   return buf.bytes()
@@ -39,10 +47,12 @@ const encodeDictionary = (obj: { [key: string]: bencodeValue }): Uint8Array => {
   const buf = new Deno.Buffer()
   buf.writeSync(te.encode("d"))
 
-  Object.keys(obj).sort(cmpRawString).forEach(key => {
-    buf.writeSync(encodeString(key))
-    buf.writeSync(new Uint8Array(encode(obj[key])))
-  })
+  Object.keys(obj)
+    .sort(cmpRawString)
+    .forEach((key) => {
+      buf.writeSync(encodeString(key))
+      buf.writeSync(new Uint8Array(encode(obj[key])))
+    })
 
   buf.writeSync(te.encode("e"))
   return buf.bytes()

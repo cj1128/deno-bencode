@@ -5,7 +5,7 @@ const te = new TextEncoder()
 const td = new TextDecoder()
 
 class Decoder {
-  idx: number = 0;
+  idx: number = 0
   buf: Uint8Array
 
   constructor(buf: Uint8Array) {
@@ -137,7 +137,9 @@ class Decoder {
   }
 }
 
-const decode = (payload: ArrayBufferView | ArrayBuffer | string): bencodeValue => {
+const decode = (
+  payload: ArrayBufferView | ArrayBuffer | string
+): bencodeValue => {
   let buf
   if (typeof payload === "string") {
     buf = te.encode(payload)
